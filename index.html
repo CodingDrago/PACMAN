@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pac-Man</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            color: #FFD700;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 12px #FFD700;
+        }
+
+        #game-canvas {
+            border: 3px solid #1a1aff;
+            box-shadow: 0 0 30px #1a1aff, 0 0 60px #00008b;
+            display: block;
+        }
+
+        #info {
+            color: #fff;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>PAC-MAN</h1>
+    <!-- The canvas where the game will be drawn -->
+    <canvas id="game-canvas"></canvas>
+    <p id="info">Part 1 &mdash; Game Board &amp; Rendering</p>
+
+    <!-- Load scripts in order -->
+    <script src="maze.js"></script>
+    <script src="renderer.js"></script>
+    <script src="game.js"></script>
+
+</body>
+
+</html>
