@@ -36,15 +36,13 @@
             background: #000;
         }
 
-        /* Canvas fills maximum possible viewport height & width while maintaining aspect ratio */
         #game-canvas {
             display: block;
-            width: 100vw;
-            height: 100vh;
+            border: 3px solid #1a1aff;
+            box-shadow: 0 0 20px #1a1aff;
             background: #000;
         }
 
-        /* SOLID BLACK OVERLAYS — NO MAZE BLEED */
         .overlay {
             position: absolute;
             top: 0;
@@ -164,7 +162,9 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="maze.js"></script>
+    <script src="pacman.js"></script>
     <script src="renderer.js"></script>
     <script src="game.js"></script>
 
