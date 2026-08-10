@@ -16,8 +16,8 @@
 
         body,
         html {
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background: #000;
             overflow: hidden;
             display: flex;
@@ -29,7 +29,6 @@
         #game-container {
             position: relative;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100vw;
@@ -37,17 +36,15 @@
             background: #000;
         }
 
+        /* Canvas fills maximum possible viewport height & width while maintaining aspect ratio */
         #game-canvas {
             display: block;
-            border: 3px solid #1a1aff;
-            box-shadow: 0 0 20px #1a1aff;
+            width: 100vw;
+            height: 100vh;
             background: #000;
-            max-width: 98vw;
-            max-height: 90vh;
-            object-fit: contain;
         }
 
-        /* Overlays are SOLID BLACK — no maze bleeding through */
+        /* SOLID BLACK OVERLAYS — NO MAZE BLEED */
         .overlay {
             position: absolute;
             top: 0;
@@ -55,7 +52,6 @@
             width: 100%;
             height: 100%;
             background: #000;
-            /* Solid black — 0% transparency */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -99,7 +95,7 @@
             box-shadow: 0 0 20px #FFD700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+            transition: transform 0.15s ease, background-color 0.15s ease;
         }
 
         .play-btn:hover,
@@ -153,7 +149,6 @@
     <div id="game-container">
         <canvas id="game-canvas"></canvas>
 
-        <!-- LOADING SCREEN OVERLAY -->
         <div id="loading-screen" class="overlay">
             <div class="arcade-title">PAC-MAN</div>
             <div class="loading-text">LOADING MAZE...</div>
@@ -162,7 +157,6 @@
             </div>
         </div>
 
-        <!-- START SCREEN OVERLAY -->
         <div id="start-screen" class="overlay hidden">
             <div class="arcade-title">PAC-MAN</div>
             <div class="ghost-row">🔴 🩷 🩵 🟠</div>
