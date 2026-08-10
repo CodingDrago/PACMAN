@@ -26,7 +26,6 @@
             font-family: 'Courier New', Courier, monospace;
         }
 
-        /* Fullscreen Game Container */
         #game-container {
             position: relative;
             display: flex;
@@ -38,7 +37,6 @@
             background: #000;
         }
 
-        /* Responsive Canvas */
         #game-canvas {
             display: block;
             border: 3px solid #1a1aff;
@@ -49,20 +47,21 @@
             object-fit: contain;
         }
 
-        /* Title & Overlay Screens */
+        /* Overlays are SOLID BLACK — no maze bleeding through */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: #000;
+            /* Solid black — 0% transparency */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 10;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.4s ease;
         }
 
         .overlay.hidden {
@@ -70,27 +69,25 @@
             pointer-events: none;
         }
 
-        /* Arcade Header Title */
         .arcade-title {
-            font-size: clamp(2rem, 6vw, 4rem);
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
             font-weight: bold;
             color: #FFD700;
             text-shadow: 0 0 15px #FFD700, 0 0 30px #FF8C00;
             letter-spacing: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             text-align: center;
             animation: pulse 1.5s infinite alternate;
         }
 
-        /* Subtitle / Ghost Row */
         .ghost-row {
-            font-size: 2rem;
-            margin-bottom: 30px;
+            font-size: 2.2rem;
+            margin-bottom: 36px;
+            letter-spacing: 8px;
         }
 
-        /* Click to Play Button */
         .play-btn {
-            padding: 14px 36px;
+            padding: 16px 40px;
             font-size: clamp(1.1rem, 3vw, 1.6rem);
             font-weight: bold;
             font-family: inherit;
@@ -99,42 +96,42 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            box-shadow: 0 0 15px #FFD700;
+            box-shadow: 0 0 20px #FFD700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .play-btn:hover,
         .play-btn:active {
             transform: scale(1.08);
             background: #FFF;
-            box-shadow: 0 0 25px #FFF;
+            box-shadow: 0 0 30px #FFF;
         }
 
-        /* Loading Bar Spinner */
+        .loading-text {
+            color: #FFB8AE;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            margin-bottom: 14px;
+        }
+
         .loading-box {
-            width: 240px;
-            height: 12px;
+            width: 260px;
+            height: 14px;
             border: 2px solid #FFD700;
-            border-radius: 6px;
+            border-radius: 7px;
             overflow: hidden;
-            margin-top: 15px;
+            padding: 2px;
         }
 
         .loading-bar {
             width: 0%;
             height: 100%;
             background: #FFD700;
+            border-radius: 4px;
             box-shadow: 0 0 10px #FFD700;
             transition: width 0.1s linear;
-        }
-
-        .loading-text {
-            color: #FFB8AE;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
         }
 
         @keyframes pulse {
@@ -154,10 +151,9 @@
 <body>
 
     <div id="game-container">
-        <!-- Game Canvas -->
         <canvas id="game-canvas"></canvas>
 
-        <!-- 1. LOADING SCREEN OVERLAY -->
+        <!-- LOADING SCREEN OVERLAY -->
         <div id="loading-screen" class="overlay">
             <div class="arcade-title">PAC-MAN</div>
             <div class="loading-text">LOADING MAZE...</div>
@@ -166,7 +162,7 @@
             </div>
         </div>
 
-        <!-- 2. START / TITLE SCREEN OVERLAY -->
+        <!-- START SCREEN OVERLAY -->
         <div id="start-screen" class="overlay hidden">
             <div class="arcade-title">PAC-MAN</div>
             <div class="ghost-row">🔴 🩷 🩵 🟠</div>
@@ -174,7 +170,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="maze.js"></script>
     <script src="renderer.js"></script>
     <script src="game.js"></script>
