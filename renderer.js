@@ -2,25 +2,25 @@ class Renderer {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        this.gameStarted = false;
 
-        // Auto adjust canvas resolution for high-DPI displays & mobile screens
         this.resize();
         window.addEventListener('resize', () => this.resize());
     }
 
     resize() {
-        // Determine maximum fitting tile size for screen dimensions
         const maxW = window.innerWidth * 0.95;
         const maxH = window.innerHeight * 0.88;
 
         this.tileSize = Math.floor(Math.min(maxW / COLS, maxH / ROWS));
 
-        // Set actual resolution
         this.canvas.width = COLS * this.tileSize;
         this.canvas.height = ROWS * this.tileSize;
 
-        // Re-render when resized
-        this.render();
+        // Only render if game has actually started
+        if (this.gameStarted) {
+            this.render();
+        }
     }
 
     clear() {
@@ -47,23 +47,34 @@ class Renderer {
                     this.drawDot(x, y, sz);
                 } else if (tile === POWER_PELLET) {
                     this.drawPowerPellet(x, y, sz);
+                } else if (tile === DOOR) {
+                    this.drawDoor(x, y, sz);
                 }
             }
         }
     }
 
     drawWall(x, y, sz) {
-        this.ctx.fillStyle = '#1a1aff';
+        // Solid blue walls with subtle dark border
+        this.ctx.fillStyle = '#1919A6';
         this.ctx.fillRect(x, y, sz, sz);
-        this.ctx.strokeStyle = '#000';
-        this.ctx.lineWidth = Math.max(1, sz / 10);
-        this.ctx.strokeRect(x, y, sz, sz);
+
+        // Light top/left highlight for 3D arcade look
+        this.ctx.strokeStyle = '#2828FF';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x + 0.5, y + 0.5, sz - 1, sz - 1);
+    }
+
+    drawDoor(x, y, sz) {
+        // Pink ghost house door line
+        this.ctx.fillStyle = '#FFB8FF';
+        this.ctx.fillRect(x, y + sz / 2 - 2, sz, 4);
     }
 
     drawDot(x, y, sz) {
         this.ctx.fillStyle = '#FFB8AE';
         this.ctx.beginPath();
-        this.ctx.arc(x + sz / 2, y + sz / 2, Math.max(2, sz / 6), 0, Math.PI * 2);
+        this.ctx.arc(x + sz / 2, y + sz / 2, Math.max(2, sz / 7), 0, Math.PI * 2);
         this.ctx.fill();
         this.ctx.closePath();
     }
@@ -71,7 +82,7 @@ class Renderer {
     drawPowerPellet(x, y, sz) {
         this.ctx.fillStyle = '#FFB8AE';
         this.ctx.beginPath();
-        this.ctx.arc(x + sz / 2, y + sz / 2, Math.max(4, sz / 3), 0, Math.PI * 2);
+        this.ctx.arc(x + sz / 2, y + sz / 2, Math.max(4, sz / 3.2), 0, Math.PI * 2);
         this.ctx.fill();
         this.ctx.closePath();
     }
