@@ -7,7 +7,43 @@ window.onload = () => {
     const startScreen = document.getElementById('start-screen');
     const playBtn = document.getElementById('play-btn');
 
-    // Simulated Loading Sequence (0% -> 100%)
+    // Spawn Pac-Man at row 15, column 18 (centered below ghost house)
+    const pacman = new PacMan(18, 15);
+
+    // Global game state reference
+    window.game = {
+        renderer: renderer,
+        pacman: pacman,
+        isRunning: false
+    };
+
+    // Keyboard Event Listener (Arrow Keys & WASD)
+    window.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 'ArrowUp':
+            case 'w':
+            case 'W':
+                pacman.setDirection(0, -1);
+                break;
+            case 'ArrowDown':
+            case 's':
+            case 'S':
+                pacman.setDirection(0, 1);
+                break;
+            case 'ArrowLeft':
+            case 'a':
+            case 'A':
+                pacman.setDirection(-1, 0);
+                break;
+            case 'ArrowRight':
+            case 'd':
+            case 'D':
+                pacman.setDirection(1, 0);
+                break;
+        }
+    });
+
+    // Simulated Loading Sequence
     let progress = 0;
     const loadInterval = setInterval(() => {
         progress += 5;
@@ -16,22 +52,29 @@ window.onload = () => {
         if (progress >= 100) {
             clearInterval(loadInterval);
             setTimeout(() => {
-                // Hide loading screen, show start title screen
                 loadingScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
             }, 250);
         }
     }, 40);
 
-    // Click to Play Event
+    // Main 60 FPS Game Loop
+    function gameLoop() {
+        if (window.game.isRunning) {
+            pacman.update();
+            renderer.render(pacman);
+            requestAnimationFrame(gameLoop);
+        }
+    }
+
+    // Click to Play Action
     playBtn.addEventListener('click', () => {
-        // Hide start overlay completely
         startScreen.classList.add('hidden');
-
-        // Mark game as started and draw the maze
         renderer.gameStarted = true;
-        renderer.render();
+        window.game.isRunning = true;
 
-        console.log("▶ Pac-Man Game Started!");
+        // Start 60fps loop
+        requestAnimationFrame(gameLoop);
+        console.log("▶ Pac-Man Game Loop Started!");
     });
 };
