@@ -7,28 +7,31 @@ window.onload = () => {
     const startScreen = document.getElementById('start-screen');
     const playBtn = document.getElementById('play-btn');
 
-    // Simulated Loading Sequence
+    // Simulated Loading Sequence (0% -> 100%)
     let progress = 0;
     const loadInterval = setInterval(() => {
-        progress += 10;
+        progress += 5;
         loadingBar.style.width = progress + '%';
 
         if (progress >= 100) {
             clearInterval(loadInterval);
             setTimeout(() => {
-                // Transition from Loading Screen to Title Screen
+                // Hide loading screen, show start title screen
                 loadingScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
-            }, 300);
+            }, 250);
         }
-    }, 100);
+    }, 40);
 
-    // Click to Play Action
+    // Click to Play Event
     playBtn.addEventListener('click', () => {
+        // Hide start overlay completely
         startScreen.classList.add('hidden');
 
-        // Draw initial map state
+        // Mark game as started and draw the maze
+        renderer.gameStarted = true;
         renderer.render();
-        console.log("Game started!");
+
+        console.log("▶ Pac-Man Game Started!");
     });
 };
