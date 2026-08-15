@@ -2,12 +2,11 @@ class PacMan {
   constructor(tileX, tileY) {
     this.tileX = tileX;
     this.tileY = tileY;
+    this.targetTileX = tileX;
+    this.targetTileY = tileY;
 
-    // Pixel position
-    this.x = tileX * TILE_SIZE + TILE_SIZE / 2;
-    this.y = tileY * TILE_SIZE + TILE_SIZE / 2;
-
-    this.speed = 3; // Integer speed for clean grid alignment
+    this.progress = 0;
+    this.speed = 0.08; // 60fps smooth interpolation speed
 
     this.dirX = 0;
     this.dirY = 0;
@@ -17,6 +16,26 @@ class PacMan {
     this.angle = 0;
     this.mouthAngle = 0.2;
     this.mouthSpeed = 0.025;
+
+    this.updatePixelPosition();
+  }
+
+  updatePixelPosition() {
+    const tw = window.TILE_W || 20;
+    const th = window.TILE_H || 20;
+
+    let startX = this.tileX * tw + tw / 2;
+    let startY = this.tileY * th + th / 2;
+    let endX = this.targetTileX * tw + tw / 2;
+    let endY = this.targetTileY * th + th / 2;
+
+    if (Math.abs(this.targetTileX - this.tileX) > 1) {
+      if (this.dirX === -1) endX = startX - tw;
+      else if (this.dirX === 1) endX = startX + tw;
+    }
+
+    this.x = startX + (endX - startX) * this.progress;
+    this.y = startY + (endY - startY) * this.progress;
   }
 
   setDirection(dx, dy) {
@@ -24,11 +43,10 @@ class PacMan {
     this.nextDirY = dy;
   }
 
-  canMove(dx, dy) {
-    let targetX = this.tileX + dx;
-    let targetY = this.tileY + dy;
+  canMove(fromX, fromY, dx, dy) {
+    let targetX = fromX + dx;
+    let targetY = fromY + dy;
 
-    // Tunnel wrapping boundaries
     if (targetX < 0) targetX = COLS - 1;
     if (targetX >= COLS) targetX = 0;
 
@@ -37,49 +55,39 @@ class PacMan {
   }
 
   update() {
-    const tileCenterX = this.tileX * TILE_SIZE + TILE_SIZE / 2;
-    const tileCenterY = this.tileY * TILE_SIZE + TILE_SIZE / 2;
-
-    // Check if Pac-Man reached the center of the current tile
-    const atCenter = (
-      Math.abs(this.x - tileCenterX) < this.speed &&
-      Math.abs(this.y - tileCenterY) < this.speed
-    );
-
-    if (atCenter) {
-      // Snap exactly to center to avoid precision drift
-      this.x = tileCenterX;
-      this.y = tileCenterY;
-
-      // Try applying buffered turn
-      if (this.canMove(this.nextDirX, this.nextDirY)) {
-        this.dirX = this.nextDirX;
-        this.dirY = this.nextDirY;
+    if (this.progress === 0) {
+      // 1. Check buffered direction
+      if (this.nextDirX !== 0 || this.nextDirY !== 0) {
+        if (this.canMove(this.tileX, this.tileY, this.nextDirX, this.nextDirY)) {
+          this.dirX = this.nextDirX;
+          this.dirY = this.nextDirY;
+        }
       }
 
-      // Check if current direction is blocked
-      if (!this.canMove(this.dirX, this.dirY)) {
+      // 2. Check current direction
+      if (this.canMove(this.tileX, this.tileY, this.dirX, this.dirY)) {
+        this.targetTileX = this.tileX + this.dirX;
+        this.targetTileY = this.tileY + this.dirY;
+
+        if (this.targetTileX < 0) this.targetTileX = COLS - 1;
+        if (this.targetTileX >= COLS) this.targetTileX = 0;
+
+        this.progress += this.speed;
+      } else {
         this.dirX = 0;
         this.dirY = 0;
       }
+    } else {
+      this.progress += this.speed;
+
+      if (this.progress >= 1.0) {
+        this.tileX = this.targetTileX;
+        this.tileY = this.targetTileY;
+        this.progress = 0;
+      }
     }
 
-    // Move Pac-Man
-    this.x += this.dirX * this.speed;
-    this.y += this.dirY * this.speed;
-
-    // Update current tile index
-    this.tileX = Math.floor(this.x / TILE_SIZE);
-    this.tileY = Math.floor(this.y / TILE_SIZE);
-
-    // Tunnel wrapping
-    if (this.x < 0) {
-      this.x = COLS * TILE_SIZE;
-      this.tileX = COLS - 1;
-    } else if (this.x > COLS * TILE_SIZE) {
-      this.x = 0;
-      this.tileX = 0;
-    }
+    this.updatePixelPosition();
 
     // Facing direction
     if (this.dirX === 1) this.angle = 0;
@@ -87,8 +95,7 @@ class PacMan {
     else if (this.dirY === 1) this.angle = Math.PI / 2;
     else if (this.dirY === -1) this.angle = -Math.PI / 2;
 
-    // Animate mouth only while moving
-    if (this.dirX !== 0 || this.dirY !== 0) {
+    if (this.progress > 0) {
       this.animateMouth();
     }
   }
@@ -101,11 +108,13 @@ class PacMan {
   }
 
   draw(ctx) {
+    const tw = window.TILE_W || 20;
+    const th = window.TILE_H || 20;
+    const radius = Math.min(tw, th) * 0.42;
+
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
-
-    const radius = TILE_SIZE * 0.42;
 
     ctx.fillStyle = '#FFD700';
     ctx.beginPath();
