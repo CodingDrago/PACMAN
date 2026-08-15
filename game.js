@@ -8,7 +8,7 @@ window.onload = () => {
     const playBtn = document.getElementById('play-btn');
 
     // Spawn Pac-Man at row 15, column 18 (centered below ghost house)
-    const pacman = new PacMan(18, 15);
+    const pacman = new PacMan(19, 17);
 
     // Global game state reference
     window.game = {
