@@ -12,13 +12,11 @@ class Renderer {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Fill screen 100%
     this.canvas.width = width;
     this.canvas.height = height;
 
-    // Tile size scales to fill width/height
-    window.TILE_SIZE = width / COLS;
-    this.tileH = height / ROWS;
+    window.TILE_W = width / COLS;
+    window.TILE_H = height / ROWS;
 
     if (this.gameStarted && window.game) {
       this.render(window.game.pacman);
@@ -40,8 +38,8 @@ class Renderer {
   }
 
   drawMap() {
-    const tw = TILE_SIZE;
-    const th = this.tileH || TILE_SIZE;
+    const tw = window.TILE_W;
+    const th = window.TILE_H;
 
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
